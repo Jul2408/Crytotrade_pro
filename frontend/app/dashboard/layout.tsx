@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -32,10 +32,29 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     const [notifications, setNotifications] = useState<any[]>([]);
     const [isNotifOpen, setIsNotifOpen] = useState(false);
 
+    const prevUnreadCount = useRef(0);
+    const isFirstLoad = useRef(true);
+
+    const playNotificationSound = () => {
+        const audio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
+        audio.volume = 0.5;
+        audio.play().catch(e => console.error("Error playing sound:", e));
+    };
+
     const fetchNotifications = async () => {
         try {
             const data = await api.get('/notifications/');
             setNotifications(data);
+
+            const currentUnread = data.filter((n: any) => !n.is_read).length;
+
+            // Play sound if we have NEW unread notifications
+            if (currentUnread > prevUnreadCount.current && !isFirstLoad.current) {
+                playNotificationSound();
+            }
+
+            prevUnreadCount.current = currentUnread;
+            isFirstLoad.current = false;
         } catch (error) {
             console.error('Failed to fetch notifications:', error);
         }

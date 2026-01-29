@@ -1,10 +1,10 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
-const getHeaders = () => {
+const getHeaders = (endpoint?: string) => {
     const headers: any = {
         'Content-Type': 'application/json',
     };
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && endpoint !== '/login/') {
         const token = localStorage.getItem('token');
         if (token) {
             headers['Authorization'] = `Token ${token}`;
@@ -29,7 +29,7 @@ const handleResponse = async (response: Response) => {
                     if (fields.length > 0) {
                         const firstField = fields[0];
                         const firstError = Array.isArray(errorData[firstField]) ? errorData[firstField][0] : errorData[firstField];
-                        errorMessage = `${firstField}: ${firstError}`;
+                        errorMessage = `${firstField === 'non_field_errors' ? '' : firstField + ': '}${firstError}`;
                     }
                 }
             }
@@ -43,18 +43,20 @@ const handleResponse = async (response: Response) => {
 
 export const api = {
     async post(endpoint: string, data: any) {
+        console.log(`POST request to ${endpoint}`, data);
         const response = await fetch(`${API_URL}${endpoint}`, {
             method: 'POST',
-            headers: getHeaders(),
+            headers: getHeaders(endpoint),
             body: JSON.stringify(data),
         });
+        console.log(`Response status: ${response.status}`);
         return handleResponse(response);
     },
 
     async patch(endpoint: string, data: any) {
         const response = await fetch(`${API_URL}${endpoint}`, {
             method: 'PATCH',
-            headers: getHeaders(),
+            headers: getHeaders(endpoint),
             body: JSON.stringify(data),
         });
         return handleResponse(response);
@@ -62,7 +64,7 @@ export const api = {
 
     async get(endpoint: string) {
         const response = await fetch(`${API_URL}${endpoint}`, {
-            headers: getHeaders(),
+            headers: getHeaders(endpoint),
         });
         return handleResponse(response);
     },
@@ -70,7 +72,7 @@ export const api = {
     async delete(endpoint: string) {
         const response = await fetch(`${API_URL}${endpoint}`, {
             method: 'DELETE',
-            headers: getHeaders(),
+            headers: getHeaders(endpoint),
         });
         if (!response.ok) return handleResponse(response);
         return response.status === 204 ? null : response.json();

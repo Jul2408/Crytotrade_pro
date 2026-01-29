@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Lock, Mail, ShieldCheck, ArrowRight, AlertCircle } from 'lucide-react';
@@ -13,6 +13,11 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
 
+    // Clear any existing session on mount
+    useEffect(() => {
+        localStorage.removeItem('token');
+    }, []);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -20,8 +25,8 @@ export default function LoginPage() {
 
         try {
             const data = await api.post('/login/', {
-                username,
-                password,
+                username: username.trim(),
+                password: password.trim(),
             });
 
             if (data.token) {
