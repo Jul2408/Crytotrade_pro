@@ -8,33 +8,42 @@
   --color-brand-secondary: #7928ca;
   --color-brand-text-dim: #888888;
 
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  --font-display: 'Outfit', 'Inter', sans-serif;
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
 
+  /* Fix for the 'border-border' and other utility issues */
   --color-border: var(--color-brand-border);
   --color-background: var(--color-brand-bg);
   --color-foreground: #ffffff;
-
+  
+  /* Animations */
   --animate-fade-in: fade-in 0.5s ease-out forwards;
   --animate-pulse: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   --animate-marquee: marquee 20s linear infinite;
   --animate-spin-slow: spin 8s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
-}
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+  }
 
-@keyframes fade-in {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes marquee {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: .7; transform: scale(1.05); }
+  }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
 }
 
 :root {
@@ -44,10 +53,8 @@
 
 @layer base {
   html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    @apply antialiased;
     font-size: 14px;
-    scroll-behavior: smooth;
   }
 
   @media (min-width: 768px) {
@@ -57,34 +64,23 @@
   }
 
   body {
-    background-color: #03040b;
+    background-color: var(--color-brand-bg);
     color: #ffffff;
-    overflow-x: hidden;
+    @apply overflow-x-hidden;
   }
 }
 
 @layer components {
   .mobile-menu-active {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background-color: #03040b;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    animation: fade-in 0.5s ease-out forwards;
+    @apply fixed inset-0 z-[100] bg-brand-bg flex flex-col items-center justify-center gap-8 text-2xl font-display font-bold animate-fade-in;
   }
 
   .glass-card {
-    background: rgba(13, 14, 24, 0.7);
+    background: var(--color-brand-card);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.5s cubic-bezier(0,0,0.2,1);
+    border: 1px solid var(--color-brand-border);
+    @apply transition-all duration-500 ease-out;
   }
 
   .premium-gradient {
@@ -103,28 +99,29 @@
   }
 
   .btn-premium {
-    position: relative;
-    overflow: hidden;
-    padding: 0.75rem 2rem;
-    border-radius: 9999px;
-    font-weight: 500;
-    transition: all 0.3s;
+    @apply relative overflow-hidden px-8 py-3 rounded-full font-medium transition-all duration-300;
     background: linear-gradient(90deg, #0070f3, #7928ca);
     box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
   }
 
   .btn-premium:hover {
-    transform: scale(1.02);
-    filter: brightness(1.1);
+    @apply scale-[1.02] brightness-110 shadow-lg;
     box-shadow: 0 6px 20px rgba(0, 118, 255, 0.5);
   }
 }
 
+/* Custom selection */
 ::selection {
   background: rgba(0, 112, 243, 0.3);
   color: white;
 }
 
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Glow Background effect */
 .orb {
   position: absolute;
   width: 600px;
@@ -137,13 +134,13 @@
 }
 
 .orb-blue {
-  background: #0070f3;
+  background: var(--color-brand-primary);
   top: -200px;
   right: -100px;
 }
 
 .orb-purple {
-  background: #7928ca;
+  background: var(--color-brand-secondary);
   bottom: -200px;
   left: -100px;
 }
