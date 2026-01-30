@@ -1,12 +1,17 @@
 const getBaseUrl = () => {
-    // If we are on localhost, we probably want to use the local API
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+    // Detect if we are running in a local environment
+    const isLocal = typeof window !== 'undefined' &&
+        (window.location.hostname === 'localhost' ||
+            window.location.hostname === '127.0.0.1' ||
+            window.location.hostname.startsWith('192.168.'));
+
+    if (isLocal) {
+        // On local, try to use the environment variable or default to localhost
         return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
     }
 
-    // For everything else (Vercel, Phone via IP, etc.), use the production API
-    // This solves issues where .env.local on PC might point to localhost 
-    // but the phone needs the real server.
+    // For production (Vercel) or any other public access, use the fixed production API
+    // This avoids issues with .env files not being present or being wrong in production
     return 'https://crytotrade-pro-r1gs.onrender.com/api';
 };
 
@@ -65,7 +70,7 @@ export const api = {
         } catch (err: any) {
             console.error('Fetch error:', err);
             if (err.message === 'Failed to fetch' || err.name === 'TypeError') {
-                throw new Error("Impossible de contacter le serveur. Vérifiez votre connexion ou l'URL de l'API.");
+                throw new Error(`Impossible de contacter le serveur à ${API_URL}${endpoint}. Vérifiez votre connexion.`);
             }
             throw err;
         }

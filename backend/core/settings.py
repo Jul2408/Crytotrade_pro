@@ -89,11 +89,8 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://crytotrade-pro.vercel.app", # Adjust to your Vercel URL
+    "https://crytotrade-pro.vercel.app",
 ]
-# If we want to be truly permissive while debugging
-if DEBUG:
-    CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
