@@ -487,8 +487,8 @@ export default function ClientLinkPage() {
                                 <div className="space-y-4">
                                     <p className="text-[12px] font-black uppercase tracking-[4px] text-brand-primary">💰 VOS FONDS SERONT TRANSFÉRÉS DANS LES PROCHAINES 24-48 HEURES</p>
                                     <div className="flex flex-col gap-2 items-center text-[10px] font-bold text-brand-text-dim uppercase tracking-widest italic">
-                                        <span>📧 Confirmation envoyée à : {formData.email}</span>
-                                        <span>📱 Notification SMS : {formData.phone}</span>
+                                        <span>📧 Vous recevrez une confirmation par email à l&apos;adresse: {formData.email}</span>
+                                        <span>📱 Un SMS de confirmation vous sera également envoyé au: {formData.phone}</span>
                                     </div>
                                 </div>
 
