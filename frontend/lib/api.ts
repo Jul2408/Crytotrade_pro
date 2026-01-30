@@ -1,15 +1,13 @@
 const getBaseUrl = () => {
-    // If the environment variable is set, use it
-    if (process.env.NEXT_PUBLIC_API_URL) return process.env.NEXT_PUBLIC_API_URL;
-
-    // In production (Vercel), we should ideally NOT fall back to localhost
-    // because it will 100% fail due to Mixed Content (HTTPS -> HTTP)
-    if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
-        // Fallback to the known production backend if on production frontend
-        return 'https://crytotrade-pro-r1gs.onrender.com/api';
+    // If we are on localhost, we probably want to use the local API
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+        return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
     }
 
-    return 'http://localhost:8000/api';
+    // For everything else (Vercel, Phone via IP, etc.), use the production API
+    // This solves issues where .env.local on PC might point to localhost 
+    // but the phone needs the real server.
+    return 'https://crytotrade-pro-r1gs.onrender.com/api';
 };
 
 const API_URL = getBaseUrl();
