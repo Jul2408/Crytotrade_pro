@@ -27,5 +27,4 @@ local_settings.py
 *.swo
 
 # Project specific
-backend/api/migrations/00*.py
-!backend/api/migrations/__init__.py
+backend/api/migrations/__pycache__/
