@@ -1,9 +1,10 @@
 import requests
 
-API_URL = "http://localhost:8000/api"
+API_URL = "https://crytotrade-pro-r1gs.onrender.com/api"
 
 def test_create_link():
-    # Login to get token
+    # 1. Login
+    print("Attempting login...")
     login_res = requests.post(f"{API_URL}/login/", json={
         "username": "admin",
         "password": "admin123"
@@ -14,22 +15,22 @@ def test_create_link():
         return
 
     token = login_res.json().get('token')
+    print(f"Login success. Token: {token[:10]}...")
+
+    # 2. Create link
+    print("Attempting to create a link...")
     headers = {
         "Authorization": f"Token {token}",
         "Content-Type": "application/json"
     }
-
-    # Try to create a link
-    payload = {
-        "name": "Test Link from Script",
+    create_res = requests.post(f"{API_URL}/links/", json={
+        "name": "Test Link From Antigravity",
+        "description": "Testing 500 error",
         "submissions_limit": 0
-    }
-    
-    print(f"Testing POST to {API_URL}/links/ with payload: {payload}")
-    res = requests.post(f"{API_URL}/links/", json=payload, headers=headers)
-    
-    print(f"Response Status: {res.status_code}")
-    print(f"Response Body: {res.text}")
+    }, headers=headers)
+
+    print(f"Response Status: {create_res.status_code}")
+    print(f"Response Body: {create_res.text}")
 
 if __name__ == "__main__":
     test_create_link()

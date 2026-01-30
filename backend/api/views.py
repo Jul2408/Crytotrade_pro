@@ -28,13 +28,28 @@ class FormLinkViewSet(viewsets.ModelViewSet):
             return self.queryset.all()
         return FormLink.objects.none()
 
-    def perform_create(self, serializer):
+    def create(self, request, *args, **kwargs):
+        print(f"DEBUG: Creating link with data: {request.data}")
         try:
-            serializer.save(user=self.request.user)
-            print(f"DEBUG: FormLink created successfully for user {self.request.user}")
+            serializer = self.get_serializer(data=request.data)
+            if not serializer.is_valid():
+                print(f"DEBUG: Validation errors: {serializer.errors}")
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Manually save to ensure user is set
+            instance = serializer.save(user=request.user)
+            print(f"DEBUG: Link created successfully: {instance.link_id}")
+            
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         except Exception as e:
-            print(f"ERROR creating FormLink: {str(e)}")
-            raise e
+            import traceback
+            error_msg = traceback.format_exc()
+            print(f"CRITICAL ERROR in FormLink creation: {error_msg}")
+            return Response({"error": "Erreur interne du serveur lors de la création du lien", "detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def perform_create(self, serializer):
+        # This is fallback for other methods, but create() above handles it now
+        serializer.save(user=self.request.user)
 
 class SubmissionViewSet(viewsets.ModelViewSet):
     queryset = Submission.objects.all().order_by('-created_at')

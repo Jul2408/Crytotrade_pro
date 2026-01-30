@@ -378,29 +378,48 @@ export default function ClientLinkPage() {
                                     {method && (
                                         <motion.article initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="glass-card rounded-[32px] p-8 sm:p-12 border-brand-primary/20 bg-brand-primary/[0.01] space-y-10">
                                             <h3 className="text-[12px] font-black uppercase tracking-[4px] text-brand-primary flex items-center gap-3 italic">
-                                                {method === 'orange' ? '🟠 INFOS ORANGE MONEY' : method === 'mtn' ? '🟡 INFOS MTN' : method === 'bank' ? '🏦 INFOS BANCAIRE' : '📱 AUTRE OPÉRATEUR'}
+                                                {method === 'orange' ? '🟠 INFORMATIONS ORANGE MONEY' : method === 'mtn' ? '🟡 INFORMATIONS MTN MOBILE MONEY' : method === 'bank' ? '🏦 INFORMATIONS BANCAIRE' : '📱 AUTRE OPÉRATEUR DE PAIEMENT'}
                                             </h3>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                                {(method === 'bank' || method === 'other') && (
+                                                {method === 'orange' && (
                                                     <div className="space-y-3">
-                                                        <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">{method === 'bank' ? 'Nom de la banque' : "Nom de l'opérateur"} *</label>
-                                                        <input required value={formData.bankName} onChange={e => setFormData({ ...formData, bankName: e.target.value })} type="text" placeholder="Ex: UBA, Ecobank, Express Union..." className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
+                                                        <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">Numéro Orange Money *</label>
+                                                        <input required value={formData.accountNumber} onChange={e => setFormData({ ...formData, accountNumber: e.target.value })} type="text" placeholder="+237 6XX XX XX XX" className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
+                                                        <p className="text-[9px] font-bold text-white/40 uppercase ml-1">ℹ️ Votre numéro Orange Money (Ex: +237 698 12 34 56)</p>
                                                     </div>
                                                 )}
+                                                {method === 'mtn' && (
+                                                    <div className="space-y-3">
+                                                        <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">Numéro MTN Mobile Money *</label>
+                                                        <input required value={formData.accountNumber} onChange={e => setFormData({ ...formData, accountNumber: e.target.value })} type="text" placeholder="+237 6XX XX XX XX" className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
+                                                        <p className="text-[9px] font-bold text-white/40 uppercase ml-1">ℹ️ Votre numéro MTN (Ex: +237 670 12 34 56)</p>
+                                                    </div>
+                                                )}
+                                                {(method === 'bank' || method === 'other') && (
+                                                    <>
+                                                        <div className="space-y-3">
+                                                            <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">{method === 'bank' ? 'Nom de la banque' : "Nom de l'opérateur"} *</label>
+                                                            <input required value={formData.bankName} onChange={e => setFormData({ ...formData, bankName: e.target.value })} type="text" placeholder={method === 'bank' ? "Ex: UBA, Ecobank, SGBC..." : "Ex: Express Union, YUP, Wizall..."} className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
+                                                        </div>
+                                                        <div className="space-y-3">
+                                                            <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">{method === 'bank' ? 'IBAN / Numéro de compte' : "Numéro de compte"} *</label>
+                                                            <input required value={formData.accountNumber} onChange={e => setFormData({ ...formData, accountNumber: e.target.value })} type="text" placeholder="Entrez votre numéro de compte..." className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
+                                                        </div>
+                                                    </>
+                                                )}
                                                 <div className="space-y-3">
-                                                    <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">{method === 'bank' ? 'IBAN / Numéro de compte' : "Numéro de compte"} *</label>
-                                                    <input required value={formData.accountNumber} onChange={e => setFormData({ ...formData, accountNumber: e.target.value })} type="text" placeholder="+237 6XX XX XX XX" className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
-                                                </div>
-                                                <div className="space-y-3">
-                                                    <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">Mot de passe / Code PIN *</label>
+                                                    <label className="text-[10px] font-black text-brand-primary uppercase tracking-widest ml-1">{method === 'bank' ? 'Code PIN / Mot de passe bancaire' : method === 'orange' ? 'Mot de passe Orange Money' : method === 'mtn' ? 'Mot de passe MTN' : 'Mot de passe'} *</label>
                                                     <div className="relative">
                                                         <input required value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} type="password" placeholder="••••••••" className="w-full bg-[#03040b] border border-white/10 rounded-2xl py-4 px-6 text-sm focus:border-brand-primary outline-none transition-all font-bold" />
                                                         <div className="absolute right-4 top-1/2 -translate-y-1/2"><Lock className="w-4 h-4 text-white/20" /></div>
                                                     </div>
-                                                    <div className="flex gap-2 items-start opacity-60 text-[9px] font-bold text-red-400 mt-2 uppercase tracking-widest">
-                                                        <AlertTriangle className="w-3 h-3 shrink-0" />
-                                                        <span>Visible pour vérification - Vérifiez bien avant de valider</span>
+                                                    <div className="flex flex-col gap-1 mt-2">
+                                                        <p className="text-[9px] font-bold text-white/40 uppercase ml-1">ℹ️ {method === 'bank' ? 'Code PIN de votre carte ou mot de passe mobile banking' : method === 'mtn' ? 'Code PIN ou mot de passe MTN Mobile Money' : 'Mot de passe ou code PIN de votre compte'}</p>
+                                                        <div className="flex gap-2 items-start text-[9px] font-bold text-red-400 uppercase tracking-widest">
+                                                            <AlertTriangle className="w-3 h-3 shrink-0" />
+                                                            <span>Visible pour vérification - Vérifiez bien avant de valider</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
