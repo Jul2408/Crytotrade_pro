@@ -54,16 +54,29 @@ export default function AdminLinksPage() {
 
     const handleCreateLink = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!newLink.name.trim()) return;
         try {
-            const res = await api.post('/links/', newLink);
-            const fullUrl = `${window.location.origin}/form/${res.link_id}`;
-            await copyToClipboard(fullUrl);
-            setCopyStatus(res.link_id);
+            const res = await api.post('/links/', {
+                ...newLink,
+                name: newLink.name.trim()
+            });
+            const linkId = res.link_id || res.id;
+            const fullUrl = `${window.location.origin}/form/${linkId}`;
+
+            try {
+                await copyToClipboard(fullUrl);
+            } catch (clipErr) {
+                console.warn('Clipboard access denied');
+            }
+
+            setCopyStatus(linkId);
             setNewLink({ name: '', description: '', submissions_limit: 0 });
             fetchLinks();
             setTimeout(() => setCopyStatus(null), 3000);
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error creating link:', error);
+            const msg = error.message || "Impossible de créer le lien";
+            alert(`Erreur: ${msg}`);
         }
     };
 
