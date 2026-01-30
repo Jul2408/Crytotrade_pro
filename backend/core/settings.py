@@ -10,12 +10,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-%q%*sxm7zc(#x5!cpj-xd
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'crytotrade-pro-r1gs.onrender.com',
-    '.onrender.com'
-]
+ALLOWED_HOSTS = ['*'] # For easy mobile testing and production deployment
 
 # Application definition
 INSTALLED_APPS = [
@@ -89,7 +84,16 @@ STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-CORS_ALLOW_ALL_ORIGINS = True # In production, specify allowed origins
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://crytotrade-pro.vercel.app", # Adjust to your Vercel URL
+]
+# If we want to be truly permissive while debugging
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
